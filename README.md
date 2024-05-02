@@ -1,3 +1,14 @@
+# Iniciar projeto
+* Instalar dependencias do projeto
+```
+npm i
+```
+
+* Iniciar aplicação no ambiente de desenvolvimento
+```
+npm run dev
+```
+
 ### Requisitos Funcionais
 
 - [ ] Deve ser possivel listar usuarios cadastrados
