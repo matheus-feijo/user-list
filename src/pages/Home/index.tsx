@@ -7,8 +7,10 @@ import { apiService } from "../../services/api";
 import { IUsuario } from "../../interfaces/IUsuario";
 import { ModalManagementUser } from "../../components/ModalManagemetUser";
 import { TableUsers } from "../../components/TableUsers";
+import { useNavigate } from "react-router-dom";
 
 export function Home() {
+  const navigate = useNavigate();
   const userId = parseInt(localStorage.getItem("user_id") || "");
   const [userList, setUserList] = useState<IUsuario[]>([]);
   const [nameSearchFilter, setNameSearchFilter] = useState("");
@@ -22,6 +24,11 @@ export function Home() {
     const { value } = e.target;
 
     setNameSearchFilter(value.toLowerCase());
+  };
+
+  const handleGoOutApp = () => {
+    localStorage.removeItem("user_id");
+    navigate("/");
   };
 
   useEffect(() => {
@@ -70,9 +77,14 @@ export function Home() {
 
         <div className={styles["container-header-bottom"]}>
           <Typography>Usuarios</Typography>
-          <Button variant="contained" onClick={() => setIsOpenModal(true)}>
-            Cadastrar
-          </Button>
+          <div>
+            <Button variant="contained" onClick={() => setIsOpenModal(true)}>
+              Cadastrar
+            </Button>
+            <Button variant="contained" color="error" onClick={handleGoOutApp}>
+              Sair
+            </Button>
+          </div>
         </div>
       </header>
 
