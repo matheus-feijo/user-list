@@ -11,9 +11,4 @@ export const apiService = {
 
     return data;
   },
-
-  getUserById: async (id: number) => {
-    const { data }: { data: IUsuario[] } = await api.get("/usuarios");
-    return data.find((user) => user.id === id);
-  },
 };

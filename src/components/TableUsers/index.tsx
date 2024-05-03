@@ -19,9 +19,14 @@ import { IUsuario } from "../../interfaces/IUsuario";
 interface ITableUsersProps {
   userList: IUsuario[];
   nameSearchFilter: string;
+  isAllowedActionUsers: boolean;
 }
 
-export function TableUsers({ userList, nameSearchFilter }: ITableUsersProps) {
+export function TableUsers({
+  userList,
+  nameSearchFilter,
+  isAllowedActionUsers,
+}: ITableUsersProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -66,10 +71,13 @@ export function TableUsers({ userList, nameSearchFilter }: ITableUsersProps) {
                       {user.ativo ? "Sim" : "Não"}
                     </TableCell>
                     <TableCell align="center">
-                      <Button>
+                      <Button disabled={!isAllowedActionUsers}>
                         <EditIcon />
                       </Button>
-                      <Button onClick={handleOpenDeleteUser}>
+                      <Button
+                        onClick={handleOpenDeleteUser}
+                        disabled={!isAllowedActionUsers}
+                      >
                         <MoreVertOutlinedIcon />
                       </Button>
 

@@ -88,7 +88,14 @@ export function Home() {
         </div>
       </header>
 
-      <TableUsers nameSearchFilter={nameSearchFilter} userList={userList} />
+      <TableUsers
+        nameSearchFilter={nameSearchFilter}
+        userList={userList}
+        isAllowedActionUsers={
+          userList.find((user) => user.id === userId)?.tipoUsuario ===
+          "Administrador"
+        }
+      />
 
       <ModalManagementUser isOpen={isOpenModal} onClose={handleCloseModal} />
     </>
