@@ -39,9 +39,9 @@ export function Login() {
   ) => {
     const { email, password } = data;
 
-    const userSelected = userList?.find((user) => user.email === email);
+    const userSelected = userList?.find((user) => user.email === email.trim());
 
-    if (!userSelected || userSelected?.senha !== password) {
+    if (!userSelected || userSelected?.senha !== password.trim()) {
       setIsOpenNotification(true);
       return;
     }
