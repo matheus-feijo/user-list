@@ -20,11 +20,15 @@ import { SearchOutlined, AccountCircle } from "@mui/icons-material";
 import styles from "./style.module.css";
 import { apiService } from "../../services/api";
 import { IUsuario } from "../../interfaces/IUsuario";
+import { ModalManagementUser } from "../../components/ModalManagemetUser";
 
 export function Home() {
   const userId = parseInt(localStorage.getItem("user_id") || "");
   const [userList, setUserList] = useState<IUsuario[]>([]);
   const [nameSearchFilter, setNameSearchFilter] = useState("");
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const handleCloseModal = () => setIsOpenModal(false);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -90,7 +94,9 @@ export function Home() {
 
         <div className={styles["container-header-bottom"]}>
           <Typography>Usuarios</Typography>
-          <Button variant="contained">Cadastrar</Button>
+          <Button variant="contained" onClick={() => setIsOpenModal(true)}>
+            Cadastrar
+          </Button>
         </div>
       </header>
 
@@ -155,6 +161,8 @@ export function Home() {
           </Table>
         </TableContainer>
       </div>
+
+      <ModalManagementUser isOpen={isOpenModal} onClose={handleCloseModal} />
     </>
   );
 }

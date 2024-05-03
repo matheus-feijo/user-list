@@ -1,27 +1,146 @@
-import { Box, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Modal,
+  Radio,
+  RadioGroup,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useForm } from "react-hook-form";
+import { IUsuario } from "../../interfaces/IUsuario";
+import { useState } from "react";
+import { Notification } from "../Notification";
 
-// interface IModalManagementUserProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-// }
+interface IModalManagementUserProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-export function ModalManagementUser() {
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  Height: 800,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  border: "none",
+  display: "flex",
+  flexDirection: "column",
+  gap: 5,
+};
+
+export function ModalManagementUser({
+  isOpen,
+  onClose,
+}: IModalManagementUserProps) {
+  const [isOpenNotification, setIsOpenNotification] = useState(false);
+  const { register, handleSubmit, resetField } = useForm<IUsuario>();
+
+  const onSubmit = (data: IUsuario) => {
+    console.log(data);
+    resetField("ativo");
+    resetField("tipoUsuario");
+    resetField("email");
+    resetField("nome");
+    resetField("senha");
+    resetField("sobrenome");
+    setIsOpenNotification(true);
+
+    onClose();
+  };
+
   return (
     <>
-      <Modal
-        open={true}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
+      <Modal open={isOpen} onClose={onClose}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Cadastro de usuario
+            </Typography>
+
+            <FormControlLabel
+              control={<Switch {...register("ativo")} />}
+              label="Usuario ativo"
+            />
+
+            <FormControl>
+              <FormLabel id="demo-row-radio-buttons-group-label">
+                Tipo de usuario
+              </FormLabel>
+              <RadioGroup
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+              >
+                <FormControlLabel
+                  value="Administrador"
+                  control={<Radio {...register("tipoUsuario")} />}
+                  label="Administrador"
+                />
+                <FormControlLabel
+                  value="Usuario Padrão"
+                  control={<Radio {...register("tipoUsuario")} />}
+                  label="Usuario Padrão"
+                />
+              </RadioGroup>
+            </FormControl>
+
+            <TextField
+              variant="standard"
+              label="Nome"
+              required
+              {...register("nome")}
+            />
+            <TextField
+              variant="standard"
+              label="Sobrenome"
+              required
+              {...register("sobrenome")}
+            />
+            <TextField
+              variant="standard"
+              label="Email"
+              required
+              {...register("email")}
+            />
+            <TextField
+              variant="standard"
+              label="Senha"
+              required
+              {...register("senha")}
+            />
+
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                justifyContent: "end",
+              }}
+            >
+              <Button color="inherit" type="reset" onClick={onClose}>
+                Cancelar
+              </Button>
+              <Button variant="text" type="submit">
+                Cadastrar
+              </Button>
+            </div>
+          </Box>
+        </form>
       </Modal>
+
+      <Notification
+        isOpen={isOpenNotification}
+        message="Usuario cadastrado com sucesso!"
+        type="success"
+        onClose={() => setIsOpenNotification(false)}
+      />
     </>
   );
 }
