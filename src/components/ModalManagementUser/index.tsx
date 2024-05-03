@@ -15,27 +15,12 @@ import { useForm } from "react-hook-form";
 import { IUsuario } from "../../interfaces/IUsuario";
 import { useState } from "react";
 import { Notification } from "../Notification";
+import { styleModal } from "./styled";
 
 interface IModalManagementUserProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  Height: 800,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-  border: "none",
-  display: "flex",
-  flexDirection: "column",
-  gap: 5,
-};
 
 export function ModalManagementUser({
   isOpen,
@@ -61,7 +46,7 @@ export function ModalManagementUser({
     <>
       <Modal open={isOpen} onClose={onClose}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box sx={style}>
+          <Box sx={styleModal}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
               Cadastro de usuario
             </Typography>

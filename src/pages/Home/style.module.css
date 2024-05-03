@@ -31,3 +31,9 @@
     padding: 0px 20px;
 }
 
+
+.container-button-header{
+    display: flex;
+    gap: 10px;
+}
+

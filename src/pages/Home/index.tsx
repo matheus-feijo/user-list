@@ -5,7 +5,7 @@ import { SearchOutlined, AccountCircle } from "@mui/icons-material";
 import styles from "./style.module.css";
 import { apiService } from "../../services/api";
 import { IUsuario } from "../../interfaces/IUsuario";
-import { ModalManagementUser } from "../../components/ModalManagemetUser";
+import { ModalManagementUser } from "../../components/ModalManagementUser";
 import { TableUsers } from "../../components/TableUsers";
 import { useNavigate } from "react-router-dom";
 
@@ -77,7 +77,7 @@ export function Home() {
 
         <div className={styles["container-header-bottom"]}>
           <Typography>Usuarios</Typography>
-          <div>
+          <div className={styles["container-button-header"]}>
             <Button variant="contained" onClick={() => setIsOpenModal(true)}>
               Cadastrar
             </Button>
