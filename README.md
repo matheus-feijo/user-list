@@ -16,6 +16,8 @@ npm run dev
 npx json-server db.json
 ```
 
+* Link Deploy: https://user-list-lime.vercel.app/
+
 ### Requisitos Funcionais
 
 - [x] Deve ser possivel listar usuarios cadastrados
