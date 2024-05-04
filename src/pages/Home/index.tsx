@@ -13,7 +13,6 @@ export function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [userSelectedToEdit, setUserSelectedToEdit] =
     useState<Partial<IUsuario>>();
-
   const [contentNotification, setContentNotification] =
     useState<IContentNotification>();
 
@@ -30,15 +29,24 @@ export function Home() {
     setNameSearchFilter(value.toLowerCase());
   };
 
+  const handleRemoveUser = (userId: string) => {
+    setUserList((users) => users.filter((user) => user.id !== userId));
+    setContentNotification({
+      type: "success",
+      content: "Usuario removido com sucesso!",
+    });
+  };
+
+  const handleOpenModalEditUser = (user: IUsuario) => {
+    setIsOpenModal(true);
+    setUserSelectedToEdit(user);
+  };
+
   useEffect(() => {
     apiService
       .getAllUsers()
       .then((data) => {
         setUserList(data);
-        setContentNotification({
-          type: "success",
-          content: "Lista de usuarios carregada com sucesso!",
-        });
       })
       .catch((erro) => {
         console.log(erro);
@@ -54,6 +62,10 @@ export function Home() {
     <>
       <TheHeader
         onSearchNameByFilter={handleChangeSearchFilter}
+        isAllowedActionUsers={
+          userList.find((user) => user.id === localStorage.getItem("user_id"))
+            ?.tipoUsuario === "Administrador"
+        }
         userInfo={userList.find(
           (user) => user.id === localStorage.getItem("user_id")
         )}
@@ -67,21 +79,18 @@ export function Home() {
           userList.find((user) => user.id === localStorage.getItem("user_id"))
             ?.tipoUsuario === "Administrador"
         }
-        onEditUser={(user: IUsuario) => {
-          setIsOpenModal(true);
-          setUserSelectedToEdit(user);
-        }}
-        onRemoveUser={(userId: string) => {
-          setUserList((users) => users.filter((user) => user.id !== userId));
-        }}
+        onEditUser={handleOpenModalEditUser}
+        onRemoveUser={handleRemoveUser}
       />
 
-      <ModalManagementUser
-        isOpen={isOpenModal}
-        onClose={handleCloseModal}
-        initialValues={userSelectedToEdit}
-        setUserList={setUserList}
-      />
+      {isOpenModal && (
+        <ModalManagementUser
+          isOpen={isOpenModal}
+          onClose={handleCloseModal}
+          initialValues={userSelectedToEdit}
+          setUserList={setUserList}
+        />
+      )}
 
       {contentNotification && (
         <Notification

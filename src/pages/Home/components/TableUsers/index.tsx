@@ -32,13 +32,19 @@ export function TableUsers({
   onRemoveUser,
 }: ITableUsersProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [userIdSelected, setUserIdSelected] = useState("");
 
-  const handleOpenDeleteUser = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenDeleteUser = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    userId: string
+  ) => {
     setAnchorEl(event.currentTarget);
+    setUserIdSelected(userId);
   };
 
   const handleCloseDeleteUser = () => {
     setAnchorEl(null);
+    setUserIdSelected("");
   };
 
   return (
@@ -81,7 +87,7 @@ export function TableUsers({
                         <EditIcon />
                       </Button>
                       <Button
-                        onClick={handleOpenDeleteUser}
+                        onClick={(e) => handleOpenDeleteUser(e, user.id)}
                         disabled={!isAllowedActionUsers}
                       >
                         <MoreVertOutlinedIcon />
@@ -97,7 +103,8 @@ export function TableUsers({
                       >
                         <MenuItem
                           onClick={() => {
-                            onRemoveUser(user.id);
+                            if (!userIdSelected) return;
+                            onRemoveUser(userIdSelected);
                             handleCloseDeleteUser();
                           }}
                         >

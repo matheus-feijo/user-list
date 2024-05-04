@@ -10,12 +10,14 @@ interface ITheHeaderProps {
   ) => void;
   userInfo: IUsuario | undefined;
   onOpenRegisterModal: () => void;
+  isAllowedActionUsers: boolean;
 }
 
 export function TheHeader({
   onSearchNameByFilter,
   userInfo,
   onOpenRegisterModal,
+  isAllowedActionUsers,
 }: ITheHeaderProps) {
   const navigate = useNavigate();
 
@@ -60,7 +62,11 @@ export function TheHeader({
         <div className={styles["container-header-bottom"]}>
           <Typography>Usuarios</Typography>
           <div className={styles["container-button-header"]}>
-            <Button variant="contained" onClick={onOpenRegisterModal}>
+            <Button
+              variant="contained"
+              onClick={onOpenRegisterModal}
+              disabled={!isAllowedActionUsers}
+            >
               Cadastrar
             </Button>
             <Button variant="contained" color="error" onClick={handleGoOutApp}>

@@ -26,7 +26,7 @@ export function Login() {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm<ILoginFormValues>();
   const [showPassword, setShowPassword] = useState(false);
-  const [isOpenNotification, setIsOpenNotification] = useState(false);
+  const [isOpenNotificationError, setIsOpenNotificationError] = useState(false);
 
   const { data: userList } = useQuery({
     initialData: [],
@@ -46,7 +46,7 @@ export function Login() {
       userSelected?.senha !== password.trim() ||
       !userSelected.ativo
     ) {
-      setIsOpenNotification(true);
+      setIsOpenNotificationError(true);
       return;
     }
     //Tratando o id como o token da pessoa para poder fazer as requisiçoes necessarias
@@ -94,8 +94,8 @@ export function Login() {
       </form>
 
       <Notification
-        isOpen={isOpenNotification}
-        onClose={() => setIsOpenNotification(false)}
+        isOpen={isOpenNotificationError}
+        onClose={() => setIsOpenNotificationError(false)}
         type="error"
         message="Cadastro não encontrado ou inativo"
       />

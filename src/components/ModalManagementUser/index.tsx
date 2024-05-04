@@ -11,14 +11,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { IUsuario } from "../../interfaces/IUsuario";
-import { useEffect, useState } from "react";
-import { Notification } from "../Notification";
+import { useEffect } from "react";
 import { styleModal } from "./styled";
 import styles from "./style.module.css";
-import { IContentNotification } from "../../interfaces/IContentNotification";
-
 interface IModalManagementUserProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,19 +30,10 @@ export function ModalManagementUser({
   setUserList,
 }: IModalManagementUserProps) {
   const isEdit = Boolean(initialValues);
-  const [contentNotification, setContentNotification] =
-    useState<IContentNotification>();
-  const { register, handleSubmit, setValue, unregister } = useForm<IUsuario>();
+  const { register, handleSubmit, setValue, unregister, control } =
+    useForm<IUsuario>();
 
   const onSubmit = (data: IUsuario) => {
-    console.log(data);
-    // resetField("ativo");
-    // resetField("tipoUsuario");
-    // resetField("email");
-    // resetField("nome");
-    // resetField("senha");
-    // resetField("sobrenome");
-
     if (isEdit) {
       if (!initialValues?.id) return;
 
@@ -59,14 +47,10 @@ export function ModalManagementUser({
         })
       );
     } else {
-      const newUser = { ...data, id: Math.random() };
+      const newUser = { ...data, id: Math.random().toFixed(5) };
       setUserList((users) => [...users, newUser]);
     }
 
-    setContentNotification({
-      type: "success",
-      content: `Usuario ${isEdit ? "cadastrado" : "atualizado"} com sucesso!`,
-    });
     unregister();
     onClose();
   };
@@ -92,31 +76,38 @@ export function ModalManagementUser({
               {`${isEdit ? "Edição" : "Cadastro"} de usuário`}
             </Typography>
 
-            <FormControlLabel
-              control={<Switch {...register("ativo")} />}
-              label="Usuario ativo"
+            <Controller
+              name="ativo"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <FormControlLabel
+                  control={<Switch checked={value} onChange={onChange} />}
+                  label="Usuario ativo"
+                />
+              )}
             />
 
-            <FormControl>
-              <FormLabel id="demo-row-radio-buttons-group-label">
-                Tipo de usuario
-              </FormLabel>
-              <RadioGroup
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-              >
-                <FormControlLabel
-                  value="Administrador"
-                  control={<Radio {...register("tipoUsuario")} />}
-                  label="Administrador"
-                />
-                <FormControlLabel
-                  value="Usuario Padrão"
-                  control={<Radio {...register("tipoUsuario")} />}
-                  label="Usuario Padrão"
-                />
-              </RadioGroup>
-            </FormControl>
+            <Controller
+              name="tipoUsuario"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <FormControl>
+                  <FormLabel>Tipo de usuario</FormLabel>
+                  <RadioGroup onChange={onChange} value={value}>
+                    <FormControlLabel
+                      value="Administrador"
+                      control={<Radio />}
+                      label="Administrador"
+                    />
+                    <FormControlLabel
+                      value="Usuário padrão"
+                      control={<Radio />}
+                      label="Usuário padrão"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              )}
+            />
 
             <TextField
               variant="standard"
@@ -142,7 +133,6 @@ export function ModalManagementUser({
               required
               {...register("senha")}
             />
-
             <div className={styles["container-button"]}>
               <Button color="inherit" type="reset" onClick={onClose}>
                 Cancelar
@@ -154,15 +144,6 @@ export function ModalManagementUser({
           </Box>
         </form>
       </Modal>
-
-      {contentNotification && (
-        <Notification
-          isOpen={Boolean(contentNotification)}
-          message={contentNotification.content}
-          type={contentNotification.type}
-          onClose={() => setContentNotification(undefined)}
-        />
-      )}
     </>
   );
 }
