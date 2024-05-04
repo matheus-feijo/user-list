@@ -8,6 +8,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
@@ -81,18 +82,23 @@ export function TableUsers({
                       {user.ativo ? "Sim" : "Não"}
                     </TableCell>
                     <TableCell align="center">
-                      <Button
-                        disabled={!isAllowedActionUsers}
-                        onClick={() => onEditUser(user)}
-                      >
-                        <EditIcon />
-                      </Button>
-                      <Button
-                        onClick={(e) => handleOpenDeleteUser(e, user.id)}
-                        disabled={!isAllowedActionUsers}
-                      >
-                        <MoreVertOutlinedIcon />
-                      </Button>
+                      <Tooltip title="Editar">
+                        <Button
+                          disabled={!isAllowedActionUsers}
+                          onClick={() => onEditUser(user)}
+                        >
+                          <EditIcon />
+                        </Button>
+                      </Tooltip>
+
+                      <Tooltip title="Mais Ações">
+                        <Button
+                          onClick={(e) => handleOpenDeleteUser(e, user.id)}
+                          disabled={!isAllowedActionUsers}
+                        >
+                          <MoreVertOutlinedIcon />
+                        </Button>
+                      </Tooltip>
 
                       <Menu
                         anchorEl={anchorEl}
