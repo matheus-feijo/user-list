@@ -1,22 +1,26 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
-
 import { useEffect, useState } from "react";
-import { SearchOutlined, AccountCircle } from "@mui/icons-material";
-import styles from "./style.module.css";
 import { apiService } from "../../services/api";
 import { IUsuario } from "../../interfaces/IUsuario";
 import { ModalManagementUser } from "../../components/ModalManagementUser";
-import { TableUsers } from "../../components/TableUsers";
-import { useNavigate } from "react-router-dom";
+import { TableUsers } from "./components/TableUsers";
+import { TheHeader } from "./components/TheHeader";
+import { Notification } from "../../components/Notification";
+import { IContentNotification } from "../../interfaces/IContentNotification";
 
 export function Home() {
-  const navigate = useNavigate();
-  const userId = parseInt(localStorage.getItem("user_id") || "");
   const [userList, setUserList] = useState<IUsuario[]>([]);
   const [nameSearchFilter, setNameSearchFilter] = useState("");
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [userSelectedToEdit, setUserSelectedToEdit] =
+    useState<Partial<IUsuario>>();
 
-  const handleCloseModal = () => setIsOpenModal(false);
+  const [contentNotification, setContentNotification] =
+    useState<IContentNotification>();
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+    setUserSelectedToEdit(undefined);
+  };
 
   const handleChangeSearchFilter = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -26,78 +30,67 @@ export function Home() {
     setNameSearchFilter(value.toLowerCase());
   };
 
-  const handleGoOutApp = () => {
-    localStorage.removeItem("user_id");
-    navigate("/");
-  };
-
   useEffect(() => {
     apiService
       .getAllUsers()
       .then((data) => {
         setUserList(data);
+        setContentNotification({
+          type: "success",
+          content: "Lista de usuarios carregada com sucesso!",
+        });
       })
       .catch((erro) => {
         console.log(erro);
+        setContentNotification({
+          type: "error",
+          content:
+            "Não foi possivel carregar lista de usuarios do banco de dados",
+        });
       });
   }, []);
 
   return (
     <>
-      <header className={styles.header}>
-        <div className={styles["container-header-top"]}>
-          <Typography variant="h5"> Gerenciar Usuarios</Typography>
-
-          <div className={styles["container-search-user"]}>
-            <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-              <SearchOutlined sx={{ color: "action.active", mr: 2, my: 0.5 }} />
-              <TextField
-                variant="standard"
-                placeholder="Buscar por usuario"
-                onChange={handleChangeSearchFilter}
-              />
-            </Box>
-
-            <div className={styles["container-data-user"]}>
-              <div>
-                <AccountCircle fontSize="large" />
-              </div>
-
-              <div>
-                <Typography variant="body2" color={"rgba(0,0,0,0.6)"}>
-                  {userList.find((user) => user.id === userId)?.nome}
-                </Typography>
-                <Typography variant="subtitle2" color={"rgba(0,0,0,0.6)"}>
-                  {userList.find((user) => user.id === userId)?.tipoUsuario}
-                </Typography>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles["container-header-bottom"]}>
-          <Typography>Usuarios</Typography>
-          <div className={styles["container-button-header"]}>
-            <Button variant="contained" onClick={() => setIsOpenModal(true)}>
-              Cadastrar
-            </Button>
-            <Button variant="contained" color="error" onClick={handleGoOutApp}>
-              Sair
-            </Button>
-          </div>
-        </div>
-      </header>
+      <TheHeader
+        onSearchNameByFilter={handleChangeSearchFilter}
+        userInfo={userList.find(
+          (user) => user.id === localStorage.getItem("user_id")
+        )}
+        onOpenRegisterModal={() => setIsOpenModal(true)}
+      />
 
       <TableUsers
         nameSearchFilter={nameSearchFilter}
         userList={userList}
         isAllowedActionUsers={
-          userList.find((user) => user.id === userId)?.tipoUsuario ===
-          "Administrador"
+          userList.find((user) => user.id === localStorage.getItem("user_id"))
+            ?.tipoUsuario === "Administrador"
         }
+        onEditUser={(user: IUsuario) => {
+          setIsOpenModal(true);
+          setUserSelectedToEdit(user);
+        }}
+        onRemoveUser={(userId: string) => {
+          setUserList((users) => users.filter((user) => user.id !== userId));
+        }}
       />
 
-      <ModalManagementUser isOpen={isOpenModal} onClose={handleCloseModal} />
+      <ModalManagementUser
+        isOpen={isOpenModal}
+        onClose={handleCloseModal}
+        initialValues={userSelectedToEdit}
+        setUserList={setUserList}
+      />
+
+      {contentNotification && (
+        <Notification
+          isOpen={Boolean(contentNotification)}
+          message={contentNotification?.content}
+          onClose={() => setContentNotification(undefined)}
+          type={contentNotification.type}
+        />
+      )}
     </>
   );
 }

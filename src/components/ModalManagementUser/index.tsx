@@ -13,42 +13,83 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { IUsuario } from "../../interfaces/IUsuario";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Notification } from "../Notification";
 import { styleModal } from "./styled";
+import styles from "./style.module.css";
+import { IContentNotification } from "../../interfaces/IContentNotification";
 
 interface IModalManagementUserProps {
   isOpen: boolean;
   onClose: () => void;
+  initialValues?: Partial<IUsuario>;
+  setUserList: React.Dispatch<React.SetStateAction<IUsuario[]>>;
 }
 
 export function ModalManagementUser({
   isOpen,
   onClose,
+  initialValues,
+  setUserList,
 }: IModalManagementUserProps) {
-  const [isOpenNotification, setIsOpenNotification] = useState(false);
-  const { register, handleSubmit, resetField } = useForm<IUsuario>();
+  const isEdit = Boolean(initialValues);
+  const [contentNotification, setContentNotification] =
+    useState<IContentNotification>();
+  const { register, handleSubmit, setValue, unregister } = useForm<IUsuario>();
 
   const onSubmit = (data: IUsuario) => {
     console.log(data);
-    resetField("ativo");
-    resetField("tipoUsuario");
-    resetField("email");
-    resetField("nome");
-    resetField("senha");
-    resetField("sobrenome");
-    setIsOpenNotification(true);
+    // resetField("ativo");
+    // resetField("tipoUsuario");
+    // resetField("email");
+    // resetField("nome");
+    // resetField("senha");
+    // resetField("sobrenome");
 
+    if (isEdit) {
+      if (!initialValues?.id) return;
+
+      const userEdited = { ...data, id: initialValues.id };
+
+      setUserList((users) =>
+        users.map((user) => {
+          if (user.id === initialValues?.id) return userEdited;
+
+          return user;
+        })
+      );
+    } else {
+      const newUser = { ...data, id: Math.random() };
+      setUserList((users) => [...users, newUser]);
+    }
+
+    setContentNotification({
+      type: "success",
+      content: `Usuario ${isEdit ? "cadastrado" : "atualizado"} com sucesso!`,
+    });
+    unregister();
     onClose();
   };
+
+  useEffect(() => {
+    if (isEdit) {
+      setValue("ativo", initialValues?.ativo || false);
+      setValue("tipoUsuario", initialValues?.tipoUsuario || "Usuário padrão");
+      setValue("email", initialValues?.email || "");
+      setValue("nome", initialValues?.nome || "");
+      setValue("sobrenome", initialValues?.sobrenome || "");
+      setValue("senha", initialValues?.senha || "");
+    }
+    //eslint-disable-next-line
+  }, []);
 
   return (
     <>
       <Modal open={isOpen} onClose={onClose}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={styleModal}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Cadastro de usuario
+            <Typography variant="h6" component="h2">
+              {`${isEdit ? "Edição" : "Cadastro"} de usuário`}
             </Typography>
 
             <FormControlLabel
@@ -102,30 +143,26 @@ export function ModalManagementUser({
               {...register("senha")}
             />
 
-            <div
-              style={{
-                display: "flex",
-                gap: 10,
-                justifyContent: "end",
-              }}
-            >
+            <div className={styles["container-button"]}>
               <Button color="inherit" type="reset" onClick={onClose}>
                 Cancelar
               </Button>
               <Button variant="text" type="submit">
-                Cadastrar
+                {isEdit ? "Atualizar" : "Cadastrar"}
               </Button>
             </div>
           </Box>
         </form>
       </Modal>
 
-      <Notification
-        isOpen={isOpenNotification}
-        message="Usuario cadastrado com sucesso!"
-        type="success"
-        onClose={() => setIsOpenNotification(false)}
-      />
+      {contentNotification && (
+        <Notification
+          isOpen={Boolean(contentNotification)}
+          message={contentNotification.content}
+          type={contentNotification.type}
+          onClose={() => setContentNotification(undefined)}
+        />
+      )}
     </>
   );
 }

@@ -1,0 +1,32 @@
+.container-header-bottom{
+    height: 5vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px;
+}
+
+
+.container-button-header{
+    display: flex;
+    gap: 10px;
+}
+
+.header{
+    background-color: #FFFF;
+    height: 15vh;
+}
+
+.container-header-top{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #E4E4E4;
+    height: 10vh;
+}
+
+.container-search-user{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}

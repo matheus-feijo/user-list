@@ -14,21 +14,24 @@ import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import styles from "./style.module.css";
 import { useState } from "react";
-import { IUsuario } from "../../interfaces/IUsuario";
+import { IUsuario } from "../../../../interfaces/IUsuario";
 
 interface ITableUsersProps {
   userList: IUsuario[];
   nameSearchFilter: string;
   isAllowedActionUsers: boolean;
+  onEditUser: (user: IUsuario) => void;
+  onRemoveUser: (userId: string) => void;
 }
 
 export function TableUsers({
   userList,
   nameSearchFilter,
   isAllowedActionUsers,
+  onEditUser,
+  onRemoveUser,
 }: ITableUsersProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
 
   const handleOpenDeleteUser = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -71,7 +74,10 @@ export function TableUsers({
                       {user.ativo ? "Sim" : "Não"}
                     </TableCell>
                     <TableCell align="center">
-                      <Button disabled={!isAllowedActionUsers}>
+                      <Button
+                        disabled={!isAllowedActionUsers}
+                        onClick={() => onEditUser(user)}
+                      >
                         <EditIcon />
                       </Button>
                       <Button
@@ -82,15 +88,19 @@ export function TableUsers({
                       </Button>
 
                       <Menu
-                        id="basic-menu"
                         anchorEl={anchorEl}
-                        open={open}
+                        open={Boolean(anchorEl)}
                         onClose={handleCloseDeleteUser}
                         MenuListProps={{
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem onClick={handleCloseDeleteUser}>
+                        <MenuItem
+                          onClick={() => {
+                            onRemoveUser(user.id);
+                            handleCloseDeleteUser();
+                          }}
+                        >
                           Excluir
                         </MenuItem>
                       </Menu>

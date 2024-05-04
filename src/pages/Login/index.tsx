@@ -41,7 +41,11 @@ export function Login() {
 
     const userSelected = userList?.find((user) => user.email === email.trim());
 
-    if (!userSelected || userSelected?.senha !== password.trim()) {
+    if (
+      !userSelected ||
+      userSelected?.senha !== password.trim() ||
+      !userSelected.ativo
+    ) {
       setIsOpenNotification(true);
       return;
     }
@@ -93,7 +97,7 @@ export function Login() {
         isOpen={isOpenNotification}
         onClose={() => setIsOpenNotification(false)}
         type="error"
-        message="Cadastro não encontrado"
+        message="Cadastro não encontrado ou inativo"
       />
     </div>
   );
