@@ -30,5 +30,3 @@ npx json-server db.json
 - [x] Somente ADMIN podera criar/desativar/ativar outros usuarios
 - [x] Usuario Padrão deve ter acesso somente a lista e aos detalhes dos usuários cadastrados, mas não
 deve conseguir executar alterações
-
-### Requisitos Não funcionais

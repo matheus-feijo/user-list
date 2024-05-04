@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { apiService } from "../../services/api";
 import { IUsuario } from "../../interfaces/IUsuario";
 import { ModalManagementUser } from "../../components/ModalManagementUser";
-import { TableUsers } from "./components/TableUsers";
-import { TheHeader } from "./components/TheHeader";
+import { TableUsers } from "../../components/TableUsers";
+import { TheHeader } from "../../components/TheHeader";
 import { Notification } from "../../components/Notification";
 import { IContentNotification } from "../../interfaces/IContentNotification";
 

@@ -2,7 +2,7 @@ import { AccountCircle, SearchOutlined } from "@mui/icons-material";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import styles from "./style.module.css";
 import { useNavigate } from "react-router-dom";
-import { IUsuario } from "../../../../interfaces/IUsuario";
+import { IUsuario } from "../../interfaces/IUsuario";
 
 interface ITheHeaderProps {
   onSearchNameByFilter: (

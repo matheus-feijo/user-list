@@ -14,7 +14,7 @@ import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import styles from "./style.module.css";
 import { useState } from "react";
-import { IUsuario } from "../../../../interfaces/IUsuario";
+import { IUsuario } from "../../interfaces/IUsuario";
 
 interface ITableUsersProps {
   userList: IUsuario[];
@@ -31,6 +31,7 @@ export function TableUsers({
   onEditUser,
   onRemoveUser,
 }: ITableUsersProps) {
+  const userIdLogged = localStorage.getItem("user_id");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [userIdSelected, setUserIdSelected] = useState("");
 
@@ -102,6 +103,10 @@ export function TableUsers({
                         }}
                       >
                         <MenuItem
+                          disabled={
+                            !isAllowedActionUsers ||
+                            userIdLogged === userIdSelected
+                          }
                           onClick={() => {
                             if (!userIdSelected) return;
                             onRemoveUser(userIdSelected);
