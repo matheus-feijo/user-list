@@ -16,6 +16,7 @@ import { IUsuario } from "../../interfaces/IUsuario";
 import { useEffect } from "react";
 import { styleModal } from "./styled";
 import styles from "./style.module.css";
+
 interface IModalManagementUserProps {
   isOpen: boolean;
   onClose: () => void;
@@ -77,6 +78,7 @@ export function ModalManagementUser({
             </Typography>
 
             <Controller
+              defaultValue={false}
               name="ativo"
               control={control}
               render={({ field: { onChange, value } }) => (
@@ -88,6 +90,7 @@ export function ModalManagementUser({
             />
 
             <Controller
+              defaultValue="Usuário padrão"
               name="tipoUsuario"
               control={control}
               render={({ field: { onChange, value } }) => (
