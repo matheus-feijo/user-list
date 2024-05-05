@@ -7,7 +7,6 @@ npm i
 
 * Iniciar aplicação no ambiente de desenvolvimento
 ```
-
 npm run dev
 ```
 
